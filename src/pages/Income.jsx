@@ -2,7 +2,7 @@ import React from 'react'
 
 function Income() {
   return (
-    <div>Income</div>
+<h1 className="text-2xl font-bold">Income Page</h1>
   )
 }
 
