@@ -41,11 +41,6 @@
 // }
 // export default App;
 
-
-
-
-
-
 // import { useEffect } from "react";
 // import { db } from "./firebase";
 // import { collection, addDoc, getDocs } from "firebase/firestore";
@@ -68,20 +63,17 @@
 
 // export default App;
 
-
-import React from 'react'
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
-import Dashboard from './pages/Dashboard';
-import Income from './pages/Income';
-import Expense from './pages/Expense';
-import Ai from './pages/Ai';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
-import NotFound from './pages/NotFound';
-import SideBar from './components/SideBar';
+import React from "react";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Dashboard from "./pages/Dashboard";
+import Income from "./pages/Income";
+import Expense from "./pages/Expense";
+import Ai from "./pages/Ai";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import NotFound from "./pages/NotFound";
+import SideBar from "./components/SideBar";
+import PrivateRoute from "./components/PrivateRoute";
 
 const TwoColumn = ({ children }) => (
   <div className="flex min-h-screen bg-gray-100">
@@ -90,69 +82,67 @@ const TwoColumn = ({ children }) => (
   </div>
 );
 
-const router = createBrowserRouter(
-  [
-    {
-      path: "/",
-      element: (
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: (
+      <PrivateRoute>
         <TwoColumn>
           <Dashboard />
         </TwoColumn>
-      )
-    },
-    {
-      path: "/income",
-      element: (
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: "/income",
+    element: (
+      <PrivateRoute>
         <TwoColumn>
           <Income />
         </TwoColumn>
-      )
-    },
-    {
-      path: "/expense",
-      element: (
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: "/expense",
+    element: (
+      <PrivateRoute>
         <TwoColumn>
           <Expense />
         </TwoColumn>
-      )
-    },
-    {
-      path: "/reports",
-      element: (
-        <TwoColumn>
-          <div className="text-gray-800">Reports page</div>
-        </TwoColumn>
-      )
-    },
-    {
-      path: "/ai",
-      element: (
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: "/ai",
+    element: (
+      <PrivateRoute>
         <TwoColumn>
           <Ai />
         </TwoColumn>
-      )
-    },
-    {
-      path: "/login",
-      element: <Login/>
-    },
-    {
-      path: "signup",
-      element: <Signup/>
-    },
-    {
-      path:"*",
-      element:<NotFound/>
-    }
-  ]
-);
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "signup",
+    element: <Signup />,
+  },
+  {
+    path: "*",
+    element: <NotFound />,
+  },
+]);
 
 function App() {
   return (
     <>
       <RouterProvider router={router} />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

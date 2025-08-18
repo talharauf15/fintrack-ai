@@ -18,15 +18,23 @@ function SideBar() {
 
   const linkClasses = ({ isActive }) =>
     `block rounded-md px-3 py-2 text-sm transition-colors ${
-      isActive ? "bg-gray-700 text-white" : "text-gray-300 hover:bg-gray-800 hover:text-white"
+      isActive
+        ? "bg-gray-700 text-white"
+        : "text-gray-300 hover:bg-gray-800 hover:text-white"
     }`;
 
   return (
     <aside
-      className={`${collapsed ? "w-20" : "w-64"} h-screen bg-gray-900 text-white flex flex-col transition-all duration-200`}
+      className={`${
+        collapsed ? "w-20" : "w-64"
+      } h-screen bg-gray-900 text-white flex flex-col transition-all duration-200`}
     >
       <div className="flex items-center justify-between px-3 py-4 border-b border-gray-800">
-        <span className={`font-semibold tracking-wide ${collapsed ? "hidden" : "block"}`}>
+        <span
+          className={`font-semibold tracking-wide ${
+            collapsed ? "hidden" : "block"
+          }`}
+        >
           Fintrack
         </span>
         <button
@@ -39,7 +47,7 @@ function SideBar() {
       </div>
 
       <nav className="flex-1 overflow-y-auto px-2 py-3 space-y-1">
-        {primaryLinks.map((item) => (
+        {primaryLinks.map(item => (
           <NavLink key={item.to} to={item.to} className={linkClasses}>
             <div className="flex items-center gap-3">
               <div className="h-2 w-2 rounded-full bg-gray-500" />
@@ -50,7 +58,7 @@ function SideBar() {
       </nav>
 
       <div className="px-2 py-3 border-t border-gray-800 space-y-1">
-        {bottomLinks.map((item) => (
+        {bottomLinks.map(item => (
           <NavLink key={item.to} to={item.to} className={linkClasses}>
             <div className="flex items-center gap-3">
               <div className="h-2 w-2 rounded-full bg-gray-500" />

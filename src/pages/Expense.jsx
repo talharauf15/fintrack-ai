@@ -2,7 +2,7 @@ import React from 'react'
 
 function Expense() {
   return (
-    <div>Expense</div>
+    <h1 className="text-2xl font-bold">Expense Page</h1>
   )
 }
 
