@@ -41,24 +41,87 @@
 // }
 // export default App;
 
-import { useEffect } from "react";
-import { db } from "./firebase";
-import { collection, addDoc, getDocs } from "firebase/firestore";
+
+
+
+
+
+// import { useEffect } from "react";
+// import { db } from "./firebase";
+// import { collection, addDoc, getDocs } from "firebase/firestore";
+
+// function App() {
+//   useEffect(() => {
+//     const testFirebase = async () => {
+//       // Write test
+//       await addDoc(collection(db, "test"), { message: "Hello Firebase!" });
+
+//       // Read test
+//       const snapshot = await getDocs(collection(db, "test"));
+//       snapshot.forEach(doc => console.log(doc.data()));
+//     };
+//     testFirebase();
+//   }, []);
+
+//   return <h1 className="text-black">Check console for Firebase logs</h1>;
+// }
+
+// export default App;
+
+
+import React from 'react'
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router";
+import Dashboard from './pages/Dashboard';
+import Income from './pages/Income';
+import Expense from './pages/Expense';
+import Ai from './pages/Ai';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import NotFound from './pages/NotFound';
+
+
+const router = createBrowserRouter(
+  [
+    {
+      path: "/",
+      element: <Dashboard/>
+    },
+    {
+      path: "/income",
+      element: <Income/>
+    },
+    {
+      path: "/expense",
+      element: <Expense/>
+    },
+    {
+      path: "/ai",
+      element: <Ai/>
+    },
+    {
+      path: "/login",
+      element: <Login/>
+    },
+    {
+      path: "signup",
+      element: <Signup/>
+    },
+    {
+      path:"*",
+      element:<NotFound/>
+    }
+  ]
+);
 
 function App() {
-  useEffect(() => {
-    const testFirebase = async () => {
-      // Write test
-      await addDoc(collection(db, "test"), { message: "Hello Firebase!" });
-
-      // Read test
-      const snapshot = await getDocs(collection(db, "test"));
-      snapshot.forEach(doc => console.log(doc.data()));
-    };
-    testFirebase();
-  }, []);
-
-  return <h1 className="text-black">Check console for Firebase logs</h1>;
+  return (
+    <>
+    <RouterProvider router={router} />
+    </>
+  )
 }
 
-export default App;
+export default App
