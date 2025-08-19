@@ -21,7 +21,14 @@ export default function Login() {
     // Check if user input matches dummy user
     if (email === dummyUser.email && password === dummyUser.password) {
       dispatch(login(dummyUser));
-      navigate("/"); // redirect after login
+
+      localStorage.setItem("auth_user", JSON.stringify({
+        id:dummyUser.id,
+        name:dummyUser.name,
+        email:dummyUser.email
+      }));
+
+      navigate("/", { replace: true }); 
     } else {
       setError("❌ User not found or wrong credentials!");
     }
@@ -64,6 +71,16 @@ export default function Login() {
         >
           Login
         </button>
+
+        <p className="text-center text-sm mt-4">
+          Don't have an account?{" "}
+          <span
+            className="text-blue-500 cursor-pointer"
+            onClick={() => navigate("/signup")}
+          >
+            Sign up
+          </span>
+        </p>
       </form>
     </div>
   );

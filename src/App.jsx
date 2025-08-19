@@ -74,6 +74,7 @@ import Signup from "./pages/Signup";
 import NotFound from "./pages/NotFound";
 import SideBar from "./components/SideBar";
 import PrivateRoute from "./components/PrivateRoute";
+import Setting from "./pages/Setting";
 
 const TwoColumn = ({ children }) => (
   <div className="flex min-h-screen bg-gray-100">
@@ -128,8 +129,18 @@ const router = createBrowserRouter([
     element: <Login />,
   },
   {
-    path: "signup",
+    path: "/signup",
     element: <Signup />,
+  },
+  {
+    path:"/settings",
+    element: (
+      <PrivateRoute>
+        <TwoColumn>
+          <Setting />
+        </TwoColumn>
+      </PrivateRoute>
+    )
   },
   {
     path: "*",
