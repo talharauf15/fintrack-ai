@@ -2,17 +2,21 @@
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../redux/authSlice";
+import { logoutUser } from "../api/userApi";
 
 export default function useLogout() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  return () => {
-    // 1) Clear redux auth
-    dispatch(logout());
-    // 2) Clear persisted user
-    localStorage.removeItem("auth_user");
-    // 3) Go to login and block back button
-    navigate("/login", { replace: true });
+  return async () => {
+    try {
+      await logoutUser();
+    } catch (err) {
+      console.error("Logout API failed:", err?.response?.data || err?.message || err);
+    } finally {
+      dispatch(logout());
+      localStorage.removeItem("auth_user");
+      navigate("/login", { replace: true });
+    }
   };
 }

@@ -1,36 +1,52 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { registerUser } from "../api/userApi";
 
 function Signup() {
   const navigate = useNavigate();
 
   // Local state for form
   const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
 
-    // Password confirmation check
     if (password !== confirmPassword) {
       setError("❌ Passwords do not match!");
       return;
     }
 
-    // Dummy register success
-    console.log("✅ User Registered:", { name, email, password });
+    const payload = {
+      username: name,
+      first_name: firstName,
+      last_name: lastName,
+      email,
+      password,
+    };
 
-    // Reset fields
-    setName("");
-    setEmail("");
-    setPassword("");
-    setConfirmPassword("");
+    try {
+      const res = await registerUser(payload);
+      // console.log("✅ User registered:", res);
 
-    // Redirect to login page
-    navigate("/login");
+      setName("");
+      setEmail("");
+      setFirstName("");
+      setLastName("");
+      setPassword("");
+      setConfirmPassword("");
+      setError("");
+
+      navigate("/login");
+    } catch (err) {
+      console.error("❌ Registration failed:", err);
+      setError("Registration failed. Try again.");
+    }
   };
 
   return (
@@ -53,6 +69,22 @@ function Signup() {
           placeholder="Full Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          className="w-full p-2 mb-4 border rounded"
+          required
+        />
+        <input
+          type="text"
+          placeholder="First Name"
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
+          className="w-full p-2 mb-4 border rounded"
+          required
+        />
+        <input
+          type="text"
+          placeholder="Last Name"
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
           className="w-full p-2 mb-4 border rounded"
           required
         />
