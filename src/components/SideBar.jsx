@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
+import LogoutButton from "./LogoutButton";
 
 function SideBar() {
   const [collapsed, setCollapsed] = useState(false);
@@ -13,7 +14,7 @@ function SideBar() {
 
   const bottomLinks = [
     { to: "/settings", label: "Settings" },
-    { to: "/logout", label: "Logout" },
+    // { to: "/logout", label: "Logout" },
   ];
 
   const linkClasses = ({ isActive }) =>
@@ -22,6 +23,10 @@ function SideBar() {
         ? "bg-gray-700 text-white"
         : "text-gray-300 hover:bg-gray-800 hover:text-white"
     }`;
+
+  // Base style for non-NavLink items (like Logout button)
+  const baseLinkClasses =
+    "block rounded-md px-3 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-white transition-colors";
 
   return (
     <aside
@@ -66,6 +71,8 @@ function SideBar() {
             </div>
           </NavLink>
         ))}
+        {/* Logout as a button (no navigation) */}
+        <LogoutButton collapsed={collapsed} className={baseLinkClasses} />
       </div>
     </aside>
   );
