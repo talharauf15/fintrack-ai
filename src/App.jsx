@@ -12,6 +12,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import Setting from "./pages/Setting";
 
 import TestIncome from "./pages/TestIncome";
+import TestExpense from "./pages/TestExpense";
 
 const TwoColumn = ({ children }) => (
   <div className="flex min-h-screen bg-gray-100">
@@ -80,11 +81,21 @@ const router = createBrowserRouter([
     )
   },
   {
-    path:"/test",
+    path:"/testincome",
     element:(
       <PrivateRoute>
         <TwoColumn>
           <TestIncome />
+        </TwoColumn>
+      </PrivateRoute>
+    )
+  },
+  {
+    path:"/testexpense",
+    element:(
+      <PrivateRoute>
+        <TwoColumn>
+          <TestExpense />
         </TwoColumn>
       </PrivateRoute>
     )
