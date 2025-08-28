@@ -1,6 +1,5 @@
 import api from "./axios";
 
-// ✅ Create Expense
 export const createExpense = async (expenseData) => {
   try {
     const res = await api.post("api/expense/", expenseData);
@@ -11,7 +10,6 @@ export const createExpense = async (expenseData) => {
   }
 };
 
-// ✅ Get all Expenses (list)
 export const listExpense = async () => {
   try {
     const res = await api.get("api/expense/");
@@ -22,7 +20,7 @@ export const listExpense = async () => {
   }
 };
 
-// ✅ Get single Expense by ID
+// Get single Expense by ID
 export const getExpense = async (id) => {
   try {
     const res = await api.get(`api/expense/${id}/`);
@@ -33,7 +31,7 @@ export const getExpense = async (id) => {
   }
 };
 
-// ✅ Update Expense (PUT)
+// Update Expense (PUT)
 export const updateExpense = async (id, expenseData) => {
   try {
     const res = await api.put(`api/expense/${id}/`, expenseData);
@@ -44,7 +42,7 @@ export const updateExpense = async (id, expenseData) => {
   }
 };
 
-// ✅ Partial Update Expense (PATCH)
+// Partial Update Expense (PATCH)
 export const patchExpense = async (id, partialData) => {
   try {
     const res = await api.patch(`api/expense/${id}/`, partialData);
@@ -55,7 +53,7 @@ export const patchExpense = async (id, partialData) => {
   }
 };
 
-// ✅ Delete Expense
+// Delete Expense
 export const deleteExpense = async (id) => {
   try {
     const res = await api.delete(`api/expense/${id}/`);
