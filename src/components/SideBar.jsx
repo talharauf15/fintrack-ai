@@ -14,7 +14,6 @@ function SideBar() {
 
   const bottomLinks = [
     { to: "/settings", label: "Settings" },
-    // { to: "/logout", label: "Logout" },
   ];
 
   const linkClasses = ({ isActive }) =>

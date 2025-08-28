@@ -5,7 +5,6 @@ import { registerUser } from "../api/userApi";
 function Signup() {
   const navigate = useNavigate();
 
-  // Local state for form
   const [name, setName] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
