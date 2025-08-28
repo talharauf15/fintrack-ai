@@ -1,9 +1,28 @@
-import React from 'react'
+import React from 'react';
+import IncomeList from '../components/incomes/IncomeList';
+import IncomeForm from '../components/incomes/IncomeForm';
 
 function Income() {
   return (
-<h1 className="text-2xl font-bold">Income Page</h1>
-  )
+    <div className="space-y-6">
+      <h1 className="text-2xl font-bold">Income Page</h1>
+      
+      {/* Chart Section - Full Width */}
+      {/* <IncomeAreaChart /> */}
+      
+      {/* Two Column Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Left Column - Future Content */}
+        
+        {/* Right Column - Expense Form */}
+        <div>
+        <IncomeForm />
+        {/* <Income/> */}
+        </div>
+      </div>
+      <IncomeList/>
+    </div>
+  );
 }
 
 export default Income

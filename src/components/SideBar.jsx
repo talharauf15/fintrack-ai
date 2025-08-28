@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { NavLink } from "react-router-dom";
 import LogoutButton from "./LogoutButton";
 
-function SideBar() {
-  const [collapsed, setCollapsed] = useState(false);
+function SideBar({ collapsed = false, onToggle }) {
 
   const primaryLinks = [
     { to: "/", label: "Dashboard" },
@@ -31,7 +30,7 @@ function SideBar() {
     <aside
       className={`${
         collapsed ? "w-20" : "w-64"
-      } h-screen bg-gray-900 text-white flex flex-col transition-all duration-200`}
+      } fixed left-0 top-0 h-screen bg-gray-900 text-white flex flex-col transition-all duration-200 z-50`}
     >
       <div className="flex items-center justify-between px-3 py-4 border-b border-gray-800">
         <span
@@ -42,7 +41,7 @@ function SideBar() {
           Fintrack
         </span>
         <button
-          onClick={() => setCollapsed(!collapsed)}
+          onClick={() => onToggle && onToggle(!collapsed)}
           className="ml-auto rounded-md bg-gray-800 px-2 py-1 text-xs text-gray-300 hover:bg-gray-700"
           aria-label="Toggle sidebar"
         >

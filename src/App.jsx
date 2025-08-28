@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Income from "./pages/Income";
@@ -15,12 +15,18 @@ import TestIncome from "./pages/TestIncome";
 import TestExpense from "./pages/TestExpense";
 import TestChatbot from "./pages/TestChatbot";
 
-const TwoColumn = ({ children }) => (
-  <div className="flex min-h-screen bg-gray-100">
-    <SideBar />
-    <main className="flex-1 p-6 overflow-y-auto">{children}</main>
-  </div>
-);
+const TwoColumn = ({ children }) => {
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  
+  return (
+    <div className="min-h-screen bg-gray-100">
+      <SideBar collapsed={sidebarCollapsed} onToggle={setSidebarCollapsed} />
+      <main className={`${sidebarCollapsed ? 'ml-20' : 'ml-64'} p-6 overflow-y-auto min-h-screen transition-all duration-200`}>
+        {children}
+      </main>
+    </div>
+  );
+};
 
 const router = createBrowserRouter([
   {
