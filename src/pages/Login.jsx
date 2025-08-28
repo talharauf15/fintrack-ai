@@ -14,18 +14,14 @@ export default function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Dummy user
-  // const dummyUser = { id: 1, name: "Talha", email: "talha@test.com", password: "123456" };
-
   const handleLogin = async e => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
-    // Prepare credentials (send both username & email to be compatible)
     const credentials = {
-      username: email, // many token endpoints expect 'username'
-      email, // some custom endpoints accept 'email'
+      username: email, 
+      email, 
       password,
     };
 
@@ -33,11 +29,11 @@ export default function Login() {
       // 1) Call login endpoint -> loginUser should save tokens in localStorage
       const tokenData = await loginUser(credentials);
       // tokenData likely has: { access, refresh }
-      console.log("✅ tokens:", tokenData);
+      // console.log("✅ tokens:", tokenData);
 
       // 2) Fetch current user (me)
       const user = await getMe();
-      console.log("✅ me:", user);
+      // console.log("✅ me:", user);
 
       // 3) Dispatch Redux action to set user in store (you used dispatch(login(...)) earlier)
       dispatch(loginAction(user));
@@ -52,11 +48,10 @@ export default function Login() {
         })
       );
 
-      // 5) Redirect to home/dashboard
       navigate("/", { replace: true });
     } catch (err) {
       console.error("Login error:", err);
-      // Try to extract useful message
+
       const msg =
         err?.response?.data?.detail ||
         err?.response?.data ||
@@ -67,23 +62,6 @@ export default function Login() {
       setLoading(false);
     }
 
-    // // Check if user input matches dummy user
-    // if (email === dummyUser.email && password === dummyUser.password) {
-    //   dispatch(login(dummyUser));
-
-    //   localStorage.setItem(
-    //     "auth_user",
-    //     JSON.stringify({
-    //       id: dummyUser.id,
-    //       name: dummyUser.name,
-    //       email: dummyUser.email,
-    //     })
-    //   );
-
-    //   navigate("/", { replace: true });
-    // } else {
-    //   setError("❌ User not found or wrong credentials!");
-    // }
   };
 
   return (

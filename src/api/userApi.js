@@ -1,10 +1,8 @@
 import api from "./axios";
 
-// 🔹 Register new user
 export const registerUser = async (userData) => {
   try {
     const res = await api.post("api/auth/register/", userData);
-    // console.log("User registered API:", res.data);
     return res.data;
   } catch (error) {
     console.error("❌ Register failed:", error.response?.data || error.message);
@@ -12,12 +10,12 @@ export const registerUser = async (userData) => {
   }
 };
 
-// 🔹 Login (get JWT tokens)
+
 export const loginUser = async (credentials) => {
   try {
     const res = await api.post("api/auth/login/", credentials);
 
-    // Save tokens in localStorage
+
     localStorage.setItem("access_token", res.data.access);
     localStorage.setItem("refresh_token", res.data.refresh);
 
@@ -28,7 +26,7 @@ export const loginUser = async (credentials) => {
   }
 };
 
-// 🔹 Refresh token
+
 export const refreshToken = async () => {
   try {
     const refresh = localStorage.getItem("refresh_token");
@@ -46,7 +44,7 @@ export const refreshToken = async () => {
   }
 };
 
-// 🔹 Get current logged-in user
+
 export const getMe = async () => {
   try {
     const res = await api.get("api/auth/me/");
@@ -57,12 +55,12 @@ export const getMe = async () => {
   }
 };
 
-// 🔹 Logout user
+
 export const logoutUser = async () => {
   try {
     const res = await api.post("api/auth/logout/");
 
-    // Clear tokens
+
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
 
