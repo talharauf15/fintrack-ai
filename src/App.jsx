@@ -13,6 +13,7 @@ import Setting from "./pages/Setting";
 
 import TestIncome from "./pages/TestIncome";
 import TestExpense from "./pages/TestExpense";
+import TestChatbot from "./pages/TestChatbot";
 
 const TwoColumn = ({ children }) => (
   <div className="flex min-h-screen bg-gray-100">
@@ -71,34 +72,44 @@ const router = createBrowserRouter([
     element: <Signup />,
   },
   {
-    path:"/settings",
+    path: "/settings",
     element: (
       <PrivateRoute>
         <TwoColumn>
           <Setting />
         </TwoColumn>
       </PrivateRoute>
-    )
+    ),
   },
   {
-    path:"/testincome",
-    element:(
+    path: "/testincome",
+    element: (
       <PrivateRoute>
         <TwoColumn>
           <TestIncome />
         </TwoColumn>
       </PrivateRoute>
-    )
+    ),
   },
   {
-    path:"/testexpense",
-    element:(
+    path: "/testexpense",
+    element: (
       <PrivateRoute>
         <TwoColumn>
           <TestExpense />
         </TwoColumn>
       </PrivateRoute>
-    )
+    ),
+  },
+  {
+    path: "/testchatbot",
+    element: (
+      <PrivateRoute>
+        <TwoColumn>
+          <TestChatbot />
+        </TwoColumn>
+      </PrivateRoute>
+    ),
   },
   {
     path: "*",
