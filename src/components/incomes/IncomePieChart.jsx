@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
+import { useSelector } from "react-redux";
+import { selectIncomes } from "../../redux/incomeSlice";
 import { PieChart, Pie, ResponsiveContainer, Sector } from "recharts";
-import { listIncome } from "../../api/incomeAPI"; 
 
 // 🎨 Colors for Income Categories
 const incomeCategoryColors = {
@@ -76,9 +77,18 @@ const renderActiveShape = ({
         outerRadius={outerRadius + 10}
         fill={fill}
       />
-      <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
+      <path
+        d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`}
+        stroke={fill}
+        fill="none"
+      />
       <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
-      <text x={ex + (cos >= 0 ? 12 : -12)} y={ey} textAnchor={textAnchor} fill="#333">
+      <text
+        x={ex + (cos >= 0 ? 12 : -12)}
+        y={ey}
+        textAnchor={textAnchor}
+        fill="#333"
+      >
         {`$${value.toFixed(2)}`}
       </text>
       <text
@@ -95,41 +105,28 @@ const renderActiveShape = ({
 };
 
 export default function IncomeChart() {
-  const [chartData, setChartData] = useState([]);
+  const incomes = useSelector(selectIncomes) || [];
   const [activeIndex, setActiveIndex] = useState(0);
 
-  useEffect(() => {
-    const fetchIncome = async () => {
-      try {
-        const income = await listIncome(); // 🔹 Call your income API
-
-        // 🔹 Group income by category
-        const grouped = income.reduce((acc, item) => {
-          const category = item.category || "Other";
-          const amount = parseFloat(item.amount);
-          acc[category] = (acc[category] || 0) + amount;
-          return acc;
-        }, {});
-
-        // 🔹 Convert to chart format
-        const formattedData = Object.keys(grouped).map((key) => ({
-          name: key,
-          value: grouped[key],
-          fill: incomeCategoryColors[key] || "#ccc",
-        }));
-
-        setChartData(formattedData);
-      } catch (err) {
-        console.error("❌ Failed to load income:", err);
-      }
-    };
-
-    fetchIncome();
-  }, []);
+  const chartData = useMemo(() => {
+    const grouped = {};
+    for (const inc of incomes) {
+      const cat = inc.category || "Other";
+      const amt = parseFloat(inc.amount) || 0;
+      grouped[cat] = (grouped[cat] || 0) + amt;
+    }
+    return Object.keys(grouped).map(name => ({
+      name,
+      value: grouped[name],
+      fill: incomeCategoryColors[name] || "#ccc",
+    }));
+  }, [incomes]);
 
   return (
     <div className="w-full bg-white shadow-lg rounded-xl p-6">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">💰 Income Distribution by Category</h2>
+      <h2 className="text-2xl font-bold mb-4 text-gray-800">
+        💰 Income Distribution by Category
+      </h2>
       <div style={{ width: "100%", height: 400 }}>
         <ResponsiveContainer>
           <PieChart>

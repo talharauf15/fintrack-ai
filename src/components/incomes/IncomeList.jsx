@@ -1,59 +1,39 @@
 import React, { useEffect, useState } from "react";
-import { listIncome, deleteIncome, updateIncome } from "../../api/incomeAPI";
-import { FaTrash, FaEdit } from "react-icons/fa"; 
+import { useSelector, useDispatch } from "react-redux";
+import {
+  selectIncomes,
+  selectIncomeLoading,
+  deleteIncomeThunk,
+  updateIncomeThunk,
+} from "../../redux/incomeSlice";
+import { FaTrash, FaEdit } from "react-icons/fa";
 
 const IncomeList = () => {
-  const [incomes, setIncomes] = useState([]);
-  const [loading, setLoading] = useState(true);
+
+
+
+  const dispatch = useDispatch();
+  const incomes = useSelector(selectIncomes) || [];
+  const loading = useSelector(selectIncomeLoading);
+
   const [editingIncome, setEditingIncome] = useState(null);
 
-  // Fetch incomes
-  const fetchIncomes = async () => {
-    try {
-      const data = await listIncome();
-      setIncomes(data);
-    } catch (error) {
-      console.error("❌ Failed to fetch incomes", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchIncomes();
-  }, []);
-
-  // Delete handler
-  const handleDelete = async (id) => {
+  const handleDelete = async id => {
     if (!window.confirm("Are you sure you want to delete this income?")) return;
-
-    try {
-      await deleteIncome(id);
-      setIncomes(incomes.filter((inc) => inc.id !== id)); // remove from UI
-    } catch (error) {
-      console.error("❌ Failed to delete income", error);
-      alert("Failed to delete income. Try again.");
-    }
+    dispatch(deleteIncomeThunk(id));
   };
 
-  // Edit handler
-  const handleEdit = (income) => {
-    setEditingIncome(income); // open the edit form
-  };
+    // Open edit row
+    const handleEdit = (income) => {
+      setEditingIncome({ ...income }); // clone to avoid mutating store
+    };
 
-  // Update handler
-  const handleUpdate = async (id, updatedData) => {
-    try {
-      const res = await updateIncome(id, updatedData);
-
-      // Update state
-      setIncomes(incomes.map((inc) => (inc.id === id ? res : inc)));
-
-      // Reset editing state
-      setEditingIncome(null);
-    } catch (err) {
-      console.error("❌ Failed to update income:", err);
-    }
+      // Submit update -> dispatch thunk
+  const handleUpdate = (e) => {
+    e.preventDefault();
+    const { id, ...payload } = editingIncome;
+    dispatch(updateIncomeThunk({ id, payload }));
+    setEditingIncome(null);
   };
 
   if (loading) {
@@ -90,12 +70,14 @@ const IncomeList = () => {
                 </td>
               </tr>
             ) : (
-              incomes.map((inc) => (
+              incomes.map(inc => (
                 <React.Fragment key={inc.id}>
                   {/* Normal Row */}
                   <tr className="border-b hover:bg-gray-50 transition">
                     <td className="py-2 px-4">{inc.id}</td>
-                    <td className="py-2 px-4">{inc.source || inc.description}</td>
+                    <td className="py-2 px-4">
+                      {inc.source || inc.description}
+                    </td>
                     <td className="py-2 px-4">${inc.amount}</td>
                     <td className="py-2 px-4">{inc.category}</td>
                     <td className="py-2 px-4">
@@ -122,16 +104,15 @@ const IncomeList = () => {
                     <tr>
                       <td colSpan="6" className="bg-gray-100 p-4">
                         <form
-                          onSubmit={(e) => {
-                            e.preventDefault();
-                            handleUpdate(inc.id, editingIncome);
-                          }}
+                          onSubmit={handleUpdate}
                           className="flex gap-2 items-center"
                         >
                           <input
                             type="text"
-                            value={editingIncome.source || editingIncome.description}
-                            onChange={(e) =>
+                            value={
+                              editingIncome.source || editingIncome.description
+                            }
+                            onChange={e =>
                               setEditingIncome({
                                 ...editingIncome,
                                 source: e.target.value,
@@ -143,7 +124,7 @@ const IncomeList = () => {
                           <input
                             type="number"
                             value={editingIncome.amount}
-                            onChange={(e) =>
+                            onChange={e =>
                               setEditingIncome({
                                 ...editingIncome,
                                 amount: e.target.value,
@@ -155,7 +136,7 @@ const IncomeList = () => {
                           <input
                             type="text"
                             value={editingIncome.category}
-                            onChange={(e) =>
+                            onChange={e =>
                               setEditingIncome({
                                 ...editingIncome,
                                 category: e.target.value,

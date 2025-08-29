@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState , useMemo } from "react";
+import { useSelector } from "react-redux";
+import { selectIncomes } from "../../redux/incomeSlice"
 import {
   ComposedChart,
   Area,
@@ -11,68 +13,36 @@ import {
   ResponsiveContainer,
   BarChart,
 } from "recharts";
-import { listIncome } from "../../api/incomeAPI";
 
 const IncomeChart = () => {
   const [view, setView] = useState("category"); // "category" | "date"
-  const [categoryData, setCategoryData] = useState([]);
-  const [dateData, setDateData] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const incomes = useSelector(selectIncomes) || [];
 
-  const fetchIncomes = async () => {
-    try {
-      const data = await listIncome();
-
-      // ✅ Category totals
-      const categoryTotals = {};
-      data.forEach(income => {
-        const amount = parseFloat(income.amount);
-        const category = income.category;
-
-        if (!categoryTotals[category]) {
-          categoryTotals[category] = 0;
-        }
-        categoryTotals[category] += amount;
-      });
-
-      const formattedCategoryData = Object.entries(categoryTotals).map(
-        ([category, total]) => ({
-          name: category,
-          amount: total,
-        })
-      );
-      setCategoryData(formattedCategoryData);
-
-      // ✅ Group by date and category
-      const grouped = {};
-      const uniqueCategories = new Set();
-
-      data.forEach(income => {
-        const date = new Date(income.date).toLocaleDateString();
-        const category = income.category;
-        const amount = parseFloat(income.amount);
-
-        if (!grouped[date]) {
-          grouped[date] = { date };
-        }
-        if (!grouped[date][category]) {
-          grouped[date][category] = 0;
-        }
-
-        grouped[date][category] += amount;
-        uniqueCategories.add(category);
-      });
-
-      setCategories([...uniqueCategories]);
-      setDateData(Object.values(grouped));
-    } catch (error) {
-      console.error("❌ Failed to fetch incomes", error);
+  // categoryData (total per category)
+  const categoryData = useMemo(() => {
+    const totals = {};
+    for (const inc of incomes) {
+      const cat = inc.category || "Other";
+      const amt = parseFloat(inc.amount) || 0;
+      totals[cat] = (totals[cat] || 0) + amt;
     }
-  };
+    return Object.entries(totals).map(([name, amount]) => ({ name, amount }));
+  }, [incomes]);
 
-  useEffect(() => {
-    fetchIncomes();
-  }, []);
+  // dateData (grouped by date, with amounts per category)
+  const { dateData, categories } = useMemo(() => {
+    const grouped = {};
+    const cats = new Set();
+    for (const inc of incomes) {
+      const date = new Date(inc.date).toLocaleDateString();
+      const cat = inc.category || "Other";
+      const amt = parseFloat(inc.amount) || 0;
+      if (!grouped[date]) grouped[date] = { date };
+      grouped[date][cat] = (grouped[date][cat] || 0) + amt;
+      cats.add(cat);
+    }
+    return { dateData: Object.values(grouped), categories: [...cats] };
+  }, [incomes]);
 
   return (
     <div className="w-full bg-white shadow-lg rounded-xl p-6">

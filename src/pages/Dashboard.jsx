@@ -1,5 +1,5 @@
 import React from "react";
-import DashboardSummary from "../components/dasboard/TotalBalanceExpenseIncome";
+import DashboardSummary from "../components/dasboard/DashboardSummary";
 import DashboardPieChart from "../components/dasboard/DashboardPieChart";
 import DashboardStackChart from "../components/dasboard/DashboardStackChart";
 import DashboardList from "../components/dasboard/DashboardList";
