@@ -1,8 +1,7 @@
-// src/redux/incomeSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { listIncome, createIncome, updateIncome, deleteIncome } from "../api/incomeAPI";
 
-// Fetch all incomes (single request)
+// Fetch all incomes
 export const fetchIncomes = createAsyncThunk(
   "income/fetchIncomes",
   async (_, { rejectWithValue }) => {
@@ -60,10 +59,10 @@ const incomeSlice = createSlice({
     items: [],
     loading: false,
     error: null,
-    lastFetched: null, // timestamp for optional TTL
+    lastFetched: null,
   },
   reducers: {
-    // keep if you want local-only actions (not required)
+    // keep if you want local-only actions 
   },
   extraReducers: (builder) => {
     builder

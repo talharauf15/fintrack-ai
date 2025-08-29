@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { listExpense, createExpense, updateExpense, deleteExpense } from "../api/expenseAPI";
 
-// Fetch all expenses (single centralized request)
+// Fetch all expenses
 export const fetchExpenses = createAsyncThunk(
   "expense/fetchExpenses",
   async (_, { rejectWithValue }) => {
@@ -59,7 +59,7 @@ const expenseSlice = createSlice({
     items: [],
     loading: false,
     error: null,
-    lastFetched: null, // optional timestamp for cache
+    lastFetched: null, 
   },
   reducers: {},
   extraReducers: (builder) => {

@@ -13,7 +13,6 @@ const ExpenseList = () => {
 
   const [editingExpense, setEditingExpense] = useState(null);
 
-  // Delete handler
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this expense?"))
       return;

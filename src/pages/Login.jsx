@@ -26,19 +26,12 @@ export default function Login() {
     };
 
     try {
-      // 1) Call login endpoint -> loginUser should save tokens in localStorage
       const tokenData = await loginUser(credentials);
-      // tokenData likely has: { access, refresh }
       // console.log("✅ tokens:", tokenData);
-
-      // 2) Fetch current user (me)
       const user = await getMe();
       // console.log("✅ me:", user);
 
-      // 3) Dispatch Redux action to set user in store (you used dispatch(login(...)) earlier)
       dispatch(loginAction(user));
-
-      // 4) Persist user locally if you want (same as before)
       localStorage.setItem(
         "auth_user",
         JSON.stringify({

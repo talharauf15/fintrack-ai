@@ -9,9 +9,6 @@ import {
 import { FaTrash, FaEdit } from "react-icons/fa";
 
 const IncomeList = () => {
-
-
-
   const dispatch = useDispatch();
   const incomes = useSelector(selectIncomes) || [];
   const loading = useSelector(selectIncomeLoading);
@@ -23,13 +20,11 @@ const IncomeList = () => {
     dispatch(deleteIncomeThunk(id));
   };
 
-    // Open edit row
-    const handleEdit = (income) => {
-      setEditingIncome({ ...income }); // clone to avoid mutating store
-    };
+  const handleEdit = income => {
+    setEditingIncome({ ...income });
+  };
 
-      // Submit update -> dispatch thunk
-  const handleUpdate = (e) => {
+  const handleUpdate = e => {
     e.preventDefault();
     const { id, ...payload } = editingIncome;
     dispatch(updateIncomeThunk({ id, payload }));

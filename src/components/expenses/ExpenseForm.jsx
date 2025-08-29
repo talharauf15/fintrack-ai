@@ -17,7 +17,7 @@ const ExpenseForm = () => {
   const [message, setMessage] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
 
-  // --- AI Suggestion (unchanged except centralization part) ---
+  // AI Suggestion 
   const debounce = (func, delay) => {
     let timeoutId;
     return (...args) => {
@@ -118,7 +118,6 @@ const ExpenseForm = () => {
       <h2 className="text-2xl font-bold mb-4 text-gray-800">➕ Add Expense</h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* --- rest of your form stays same (inputs, AI suggestion, etc.) --- */}
         {/* Description */}
         <div>
           <label className="block text-sm font-medium text-gray-700">

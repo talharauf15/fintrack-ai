@@ -24,7 +24,6 @@ const categoryColors = {
   Miscellaneous: "#9D4EDD",
 };
 
-// 🔹 Active Shape (hover effect)
 const renderActiveShape = ({
   cx,
   cy,
@@ -91,10 +90,10 @@ const renderActiveShape = ({
 };
 
 export default function ExpensePieChart() {
-  const expenses = useSelector(selectExpenses); // ✅ Get data from Redux
+  const expenses = useSelector(selectExpenses); 
   const [activeIndex, setActiveIndex] = useState(0);
 
-  // 🔹 Compute chart data whenever `expenses` changes
+  // Compute chart data whenever `expenses` changes
   const chartData = useMemo(() => {
     const grouped = expenses.reduce((acc, item) => {
       const category = item.category || "Miscellaneous";

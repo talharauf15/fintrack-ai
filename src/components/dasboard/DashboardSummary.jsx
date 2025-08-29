@@ -7,7 +7,7 @@ export default function DashboardSummary() {
   const expenses = useSelector(selectExpenses);
   const incomes = useSelector(selectIncomes);
 
-  // 🔹 Compute totals only once (memoized)
+  // Compute totals only once
   const { totalIncome, totalExpense, totalBalance } = useMemo(() => {
     const expenseSum = expenses.reduce(
       (acc, item) => acc + parseFloat(item.amount),
