@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   ComposedChart,
   Area,
-//   Bar,
+  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -25,7 +25,7 @@ const IncomeChart = () => {
 
       // ✅ Category totals
       const categoryTotals = {};
-      data.forEach((income) => {
+      data.forEach(income => {
         const amount = parseFloat(income.amount);
         const category = income.category;
 
@@ -47,7 +47,7 @@ const IncomeChart = () => {
       const grouped = {};
       const uniqueCategories = new Set();
 
-      data.forEach((income) => {
+      data.forEach(income => {
         const date = new Date(income.date).toLocaleDateString();
         const category = income.category;
         const amount = parseFloat(income.amount);
@@ -97,7 +97,9 @@ const IncomeChart = () => {
       </div>
 
       <h2 className="text-2xl font-bold mb-4 text-gray-800">
-        {view === "category" ? "📊 Income by Category" : "📊 Income by Date (Stacked by Category)"}
+        {view === "category"
+          ? "📊 Income by Category"
+          : "📊 Income by Date (Stacked by Category)"}
       </h2>
 
       <div style={{ width: "100%", height: 400 }}>
@@ -109,11 +111,29 @@ const IncomeChart = () => {
               margin={{ top: 20, right: 30, bottom: 20, left: 0 }}
             >
               <CartesianGrid stroke="#f5f5f5" />
-              <XAxis dataKey="name" label={{ value: "Category", position: "insideBottom", offset: -5 }} />
-              <YAxis label={{ value: "Total Amount", angle: -90, position: "insideLeft" }} />
+              <XAxis
+                dataKey="name"
+                label={{
+                  value: "Category",
+                  position: "insideBottom",
+                  offset: -5,
+                }}
+              />
+              <YAxis
+                label={{
+                  value: "Total Amount",
+                  angle: -90,
+                  position: "insideLeft",
+                }}
+              />
               <Tooltip />
               <Legend />
-              <Area type="monotone" dataKey="amount" fill="#82ca9d" stroke="#82ca9d" />
+              <Area
+                type="monotone"
+                dataKey="amount"
+                fill="#82ca9d"
+                stroke="#82ca9d"
+              />
               {/* <Bar dataKey="amount" barSize={25} fill="#413ea0" /> */}
             </ComposedChart>
           ) : (
