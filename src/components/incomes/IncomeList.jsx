@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { listIncome, deleteIncome, updateIncome } from "../../api/incomeAPI";
-import { FaTrash, FaEdit } from "react-icons/fa"; // ✅ Trash & Edit icons
+import { FaTrash, FaEdit } from "react-icons/fa"; 
 
 const IncomeList = () => {
   const [incomes, setIncomes] = useState([]);
