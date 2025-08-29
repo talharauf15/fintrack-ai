@@ -8,21 +8,21 @@ function Expense() {
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">Expense Page</h1>
-      
+
       {/* Chart Section - Full Width */}
       <ExpenseAreaChart />
-      
+
       {/* Two Column Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left Column - Future Content */}
         <ExpenseForm />
-        
+
         {/* Right Column - Expense Form */}
         <div>
-        <ExpensePieChart/>
+          <ExpensePieChart />
         </div>
       </div>
-      <ExpenseList/>
+      <ExpenseList />
     </div>
   );
 }

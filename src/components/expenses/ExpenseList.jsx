@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { listExpense, deleteExpense, updateExpense } from "../../api/expenseAPI";
-import { FaTrash, FaEdit } from "react-icons/fa"; // ✅ Import trash icon
+import { FaTrash, FaEdit } from "react-icons/fa"; 
 
 const ExpenseList = () => {
   const [expenses, setExpenses] = useState([]);
