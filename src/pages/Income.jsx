@@ -1,6 +1,7 @@
 import React from 'react';
 import IncomeList from '../components/incomes/IncomeList';
 import IncomeForm from '../components/incomes/IncomeForm';
+import IncomeChart from '../components/incomes/incomeComposedChart';
 
 function Income() {
   return (
@@ -8,7 +9,7 @@ function Income() {
       <h1 className="text-2xl font-bold">Income Page</h1>
       
       {/* Chart Section - Full Width */}
-      {/* <IncomeAreaChart /> */}
+      <IncomeChart />
       
       {/* Two Column Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
