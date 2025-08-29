@@ -26,7 +26,6 @@ export const createIncome = async payload => {
   }
 };
 
-// Get single income by ID
 export const getIncome = async id => {
   try {
     const res = await api.get(`api/income/${id}/`);
@@ -40,7 +39,6 @@ export const getIncome = async id => {
   }
 };
 
-// Update income completely (PUT)
 export const updateIncome = async (id, payload) => {
   try {
     const res = await api.put(`api/income/${id}/`, payload);
@@ -54,7 +52,6 @@ export const updateIncome = async (id, payload) => {
   }
 };
 
-// Partial update (PATCH)
 export const patchIncome = async (id, payload) => {
   try {
     const res = await api.patch(`api/income/${id}/`, payload);
@@ -68,7 +65,6 @@ export const patchIncome = async (id, payload) => {
   }
 };
 
-// Delete income
 export const deleteIncome = async id => {
   try {
     const res = await api.delete(`api/income/${id}/`);
