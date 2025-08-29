@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import {
   BarChart,
   Bar,
@@ -9,37 +9,37 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { listExpense } from "../../api/expenseAPI";
-import { listIncome } from "../../api/incomeAPI";
+import { useSelector } from "react-redux";
+import { selectExpenses } from "../../redux/expenseSlice";
+import { selectIncomes } from "../../redux/incomeSlice";
 
 const DashboardStackChart = () => {
-  const [data, setData] = useState([]);
+  const expenses = useSelector(selectExpenses);
+  const incomes = useSelector(selectIncomes);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const expenses = await listExpense();
-        const incomes = await listIncome();
+  // 🔹 Compute totals only once (memoized)
+  const data = useMemo(() => {
+    if (!expenses.length && !incomes.length) return [];
 
-        const totalExpense = expenses.reduce((acc, item) => acc + parseFloat(item.amount), 0);
-        const totalIncome = incomes.reduce((acc, item) => acc + parseFloat(item.amount), 0);
-        const totalBalance = totalIncome - totalExpense;
+    const totalExpense = expenses.reduce(
+      (acc, item) => acc + parseFloat(item.amount),
+      0
+    );
+    const totalIncome = incomes.reduce(
+      (acc, item) => acc + parseFloat(item.amount),
+      0
+    );
+    const totalBalance = totalIncome - totalExpense;
 
-        setData([
-          {
-            name: "Distribution",
-            Expense: totalExpense,
-            Balance: totalBalance,
-            Income: totalIncome, // (for tooltip reference)
-          },
-        ]);
-      } catch (err) {
-        console.error("❌ Failed to load chart data:", err);
-      }
-    };
-
-    fetchData();
-  }, []);
+    return [
+      {
+        name: "Distribution",
+        Expense: totalExpense,
+        Balance: totalBalance,
+        Income: totalIncome,
+      },
+    ];
+  }, [expenses, incomes]);
 
   return (
     <div className="w-full bg-white shadow-lg rounded-xl p-6">
@@ -62,7 +62,6 @@ const DashboardStackChart = () => {
             <YAxis />
             <Tooltip />
             <Legend />
-            {/* 🔹 Stacked bars */}
             <Bar dataKey="Expense" stackId="a" fill="#F44336" />
             <Bar dataKey="Balance" stackId="a" fill="#4CAF50" />
           </BarChart>

@@ -1,35 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { listExpense } from "../../api/expenseAPI";
-import { listIncome } from "../../api/incomeAPI";
+import React from "react";
+import { useSelector } from "react-redux";
+import { selectExpenses } from "../../redux/expenseSlice";
+import { selectIncomes } from "../../redux/incomeSlice";
 
 const DashboardList = () => {
-  const [expenses, setExpenses] = useState([]);
-  const [incomes, setIncomes] = useState([]);
+  const expenses = useSelector(selectExpenses);
+  const incomes = useSelector(selectIncomes);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const expenseData = await listExpense();
-        const incomeData = await listIncome();
+  const sortedExpenses = [...expenses]
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, 6);
 
-        // Sort by date (latest first)
-        const sortedExpenses = expenseData
-          .sort((a, b) => new Date(b.date) - new Date(a.date))
-          .slice(0, 6); // take latest 6
-
-        const sortedIncomes = incomeData
-          .sort((a, b) => new Date(b.date) - new Date(a.date))
-          .slice(0, 6); // take latest 6
-
-        setExpenses(sortedExpenses);
-        setIncomes(sortedIncomes);
-      } catch (err) {
-        console.error("❌ Failed to fetch transactions:", err);
-      }
-    };
-
-    fetchData();
-  }, []);
+  const sortedIncomes = [...incomes]
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, 6);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
@@ -37,7 +21,7 @@ const DashboardList = () => {
       <div className="bg-white shadow-lg rounded-xl p-6">
         <h2 className="text-xl font-bold mb-4 text-green-600">💰 Latest Incomes</h2>
         <ul className="space-y-3">
-          {incomes.map((income) => (
+          {sortedIncomes.map((income) => (
             <li
               key={`income-${income.id}`}
               className="flex justify-between items-center border-b pb-2"
@@ -60,7 +44,7 @@ const DashboardList = () => {
       <div className="bg-white shadow-lg rounded-xl p-6">
         <h2 className="text-xl font-bold mb-4 text-red-600">💸 Latest Expenses</h2>
         <ul className="space-y-3">
-          {expenses.map((expense) => (
+          {sortedExpenses.map((expense) => (
             <li
               key={`expense-${expense.id}`}
               className="flex justify-between items-center border-b pb-2"

@@ -1,38 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { listExpense } from "../../api/expenseAPI";
-import { listIncome } from "../../api/incomeAPI";
+import React, { useMemo } from "react";
+import { useSelector } from "react-redux";
+import { selectExpenses } from "../../redux/expenseSlice";
+import { selectIncomes } from "../../redux/incomeSlice";
 
 export default function DashboardSummary() {
-  const [totalIncome, setTotalIncome] = useState(0);
-  const [totalExpense, setTotalExpense] = useState(0);
+  const expenses = useSelector(selectExpenses);
+  const incomes = useSelector(selectIncomes);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // 🔹 Get expenses
-        const expenses = await listExpense();
-        const expenseSum = expenses.reduce(
-          (acc, item) => acc + parseFloat(item.amount),
-          0
-        );
-        setTotalExpense(expenseSum);
-
-        // 🔹 Get incomes
-        const incomes = await listIncome();
-        const incomeSum = incomes.reduce(
-          (acc, item) => acc + parseFloat(item.amount),
-          0
-        );
-        setTotalIncome(incomeSum);
-      } catch (err) {
-        console.error("❌ Failed to fetch data:", err);
-      }
+  // 🔹 Compute totals only once (memoized)
+  const { totalIncome, totalExpense, totalBalance } = useMemo(() => {
+    const expenseSum = expenses.reduce(
+      (acc, item) => acc + parseFloat(item.amount),
+      0
+    );
+    const incomeSum = incomes.reduce(
+      (acc, item) => acc + parseFloat(item.amount),
+      0
+    );
+    return {
+      totalIncome: incomeSum,
+      totalExpense: expenseSum,
+      totalBalance: incomeSum - expenseSum,
     };
-
-    fetchData();
-  }, []);
-
-  const totalBalance = totalIncome - totalExpense;
+  }, [expenses, incomes]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-6">
