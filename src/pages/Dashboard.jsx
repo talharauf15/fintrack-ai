@@ -2,6 +2,7 @@ import React from "react";
 import DashboardSummary from "../components/dasboard/TotalBalanceExpenseIncome";
 import DashboardPieChart from "../components/dasboard/DashboardPieChart";
 import DashboardStackChart from "../components/dasboard/DashboardStackChart";
+import DashboardList from "../components/dasboard/DashboardList";
 
 function Dashboard() {
   return (
@@ -20,7 +21,7 @@ function Dashboard() {
             <DashboardStackChart />
           </div>
         </div>
-        {/* <IncomeList /> */}
+        <DashboardList />
       </div>
     </>
   );
