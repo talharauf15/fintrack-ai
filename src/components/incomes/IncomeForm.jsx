@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { createIncome } from "../../api/incomeAPI";
+import { useDispatch } from "react-redux";
+import { createIncomeThunk } from "../../redux/incomeSlice";
 import { askChatbot } from "../../api/chatbotAPI";
 
 const IncomeForm = () => {
+  const dispatch = useDispatch();
+
   const [formData, setFormData] = useState({
     description: "",
     amount: "",
@@ -96,13 +99,14 @@ const IncomeForm = () => {
     }
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setMessage("");
 
     try {
-      await createIncome(formData);
+      // await createIncome(formData);
+      await dispatch(createIncomeThunk(formData)).unwrap();
       setMessage("✅ Income added successfully!");
       setFormData({
         description: "",
@@ -112,6 +116,7 @@ const IncomeForm = () => {
         ai_suggested_category: "",
       });
     } catch (error) {
+      console.error("❌ Create income failed:", error);
       setMessage("❌ Failed to add income");
     } finally {
       setLoading(false);
