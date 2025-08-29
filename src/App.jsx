@@ -9,11 +9,7 @@ import Signup from "./pages/Signup";
 import NotFound from "./pages/NotFound";
 import SideBar from "./components/SideBar";
 import PrivateRoute from "./components/PrivateRoute";
-import Setting from "./pages/Setting";
 
-import TestIncome from "./pages/TestIncome";
-import TestExpense from "./pages/TestExpense";
-import TestChatbot from "./pages/TestChatbot";
 
 const TwoColumn = ({ children }) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -76,46 +72,6 @@ const router = createBrowserRouter([
   {
     path: "/signup",
     element: <Signup />,
-  },
-  {
-    path: "/settings",
-    element: (
-      <PrivateRoute>
-        <TwoColumn>
-          <Setting />
-        </TwoColumn>
-      </PrivateRoute>
-    ),
-  },
-  {
-    path: "/testincome",
-    element: (
-      <PrivateRoute>
-        <TwoColumn>
-          <TestIncome />
-        </TwoColumn>
-      </PrivateRoute>
-    ),
-  },
-  {
-    path: "/testexpense",
-    element: (
-      <PrivateRoute>
-        <TwoColumn>
-          <TestExpense />
-        </TwoColumn>
-      </PrivateRoute>
-    ),
-  },
-  {
-    path: "/testchatbot",
-    element: (
-      <PrivateRoute>
-        <TwoColumn>
-          <TestChatbot />
-        </TwoColumn>
-      </PrivateRoute>
-    ),
   },
   {
     path: "*",

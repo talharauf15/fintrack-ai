@@ -10,7 +10,6 @@ const COLORS = {
   Expense: "#F44336",
 };
 
-// 🔹 Active Shape (hover effect)
 const renderActiveShape = ({
   cx,
   cy,
@@ -81,7 +80,7 @@ export default function DashboardPieChart() {
   const incomes = useSelector(selectIncomes);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  // 🔹 Compute chart data once based on redux data
+  // Compute chart data once based on redux data
   const chartData = useMemo(() => {
     if (!expenses.length && !incomes.length) return [];
 

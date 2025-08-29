@@ -1,16 +1,6 @@
-// import React from 'react'
-
-// function Ai() {
-//   return (
-//     <h1 className="text-2xl font-bold">AI Page</h1>
-//   )
-// }
-
-// export default Ai
-
 import React, { useState } from "react";
 import { Send } from "lucide-react";
-import { askChatbot } from "../api/chatbotAPI"; // <-- your API file
+import { askChatbot } from "../api/chatbotAPI"; 
 
 const Ai = () => {
   const [messages, setMessages] = useState([

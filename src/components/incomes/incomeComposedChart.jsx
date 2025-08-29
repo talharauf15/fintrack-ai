@@ -15,7 +15,7 @@ import {
 } from "recharts";
 
 const IncomeChart = () => {
-  const [view, setView] = useState("category"); // "category" | "date"
+  const [view, setView] = useState("category"); 
   const incomes = useSelector(selectIncomes) || [];
 
   // categoryData (total per category)

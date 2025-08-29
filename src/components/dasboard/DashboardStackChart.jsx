@@ -17,7 +17,7 @@ const DashboardStackChart = () => {
   const expenses = useSelector(selectExpenses);
   const incomes = useSelector(selectIncomes);
 
-  // 🔹 Compute totals only once (memoized)
+  // Compute totals only once 
   const data = useMemo(() => {
     if (!expenses.length && !incomes.length) return [];
 

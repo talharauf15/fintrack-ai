@@ -105,7 +105,6 @@ const IncomeForm = () => {
     setMessage("");
 
     try {
-      // await createIncome(formData);
       await dispatch(createIncomeThunk(formData)).unwrap();
       setMessage("✅ Income added successfully!");
       setFormData({

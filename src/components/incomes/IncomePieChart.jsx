@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import { selectIncomes } from "../../redux/incomeSlice";
 import { PieChart, Pie, ResponsiveContainer, Sector } from "recharts";
 
-// 🎨 Colors for Income Categories
 const incomeCategoryColors = {
   Salary: "#4CAF50",
   Business: "#2196F3",
@@ -29,7 +28,6 @@ const incomeCategoryColors = {
   Other: "#9E9E9E",
 };
 
-// 🔹 Active Shape (hover effect)
 const renderActiveShape = ({
   cx,
   cy,

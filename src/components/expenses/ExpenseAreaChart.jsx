@@ -14,7 +14,7 @@ import { selectExpenses } from "../../redux/expenseSlice";
 const ExpenseAreaChart = () => {
   const expenses = useSelector(selectExpenses);
 
-  // ✅ Compute chart data from centralized store (no new API call)
+  //Compute chart data from centralized store 
   const { data, categories } = useMemo(() => {
     if (!expenses || expenses.length === 0) return { data: [], categories: [] };
 
@@ -63,7 +63,7 @@ const ExpenseAreaChart = () => {
               }}
             />
 
-            {/* ✅ Dynamic Areas by Category */}
+            {/* Dynamic Areas by Category */}
             {categories.map((cat, i) => (
               <Area
                 key={cat}
