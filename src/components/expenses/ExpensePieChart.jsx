@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { PieChart, Pie, ResponsiveContainer, Sector } from "recharts";
-import { listExpense } from "../../api/expenseAPI"; 
+import { useSelector } from "react-redux";
+import { selectExpenses } from "../../redux/expenseSlice";
 
 const categoryColors = {
   Food: "#FF6B6B",
@@ -89,42 +90,31 @@ const renderActiveShape = ({
   );
 };
 
-export default function ExpenseChart() {
-  const [chartData, setChartData] = useState([]);
+export default function ExpensePieChart() {
+  const expenses = useSelector(selectExpenses); // ✅ Get data from Redux
   const [activeIndex, setActiveIndex] = useState(0);
 
-  useEffect(() => {
-    const fetchExpenses = async () => {
-      try {
-        const expenses = await listExpense();
+  // 🔹 Compute chart data whenever `expenses` changes
+  const chartData = useMemo(() => {
+    const grouped = expenses.reduce((acc, item) => {
+      const category = item.category || "Miscellaneous";
+      const amount = parseFloat(item.amount);
+      acc[category] = (acc[category] || 0) + amount;
+      return acc;
+    }, {});
 
-        // 🔹 Group expenses by category
-        const grouped = expenses.reduce((acc, item) => {
-          const category = item.category || "Miscellaneous";
-          const amount = parseFloat(item.amount);
-          acc[category] = (acc[category] || 0) + amount;
-          return acc;
-        }, {});
-
-        // 🔹 Convert to chart format
-        const formattedData = Object.keys(grouped).map((key) => ({
-          name: key,
-          value: grouped[key],
-          fill: categoryColors[key] || "#ccc",
-        }));
-
-        setChartData(formattedData);
-      } catch (err) {
-        console.error("❌ Failed to load expenses:", err);
-      }
-    };
-
-    fetchExpenses();
-  }, []);
+    return Object.keys(grouped).map((key) => ({
+      name: key,
+      value: grouped[key],
+      fill: categoryColors[key] || "#ccc",
+    }));
+  }, [expenses]);
 
   return (
     <div className="w-full bg-white shadow-lg rounded-xl p-6">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">📊 Expense Distribution by Category</h2>
+      <h2 className="text-2xl font-bold mb-4 text-gray-800">
+        📊 Expense Distribution by Category
+      </h2>
       <div style={{ width: "100%", height: 400 }}>
         <ResponsiveContainer>
           <PieChart>

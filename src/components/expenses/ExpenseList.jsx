@@ -1,36 +1,25 @@
-import React, { useEffect, useState } from "react";
-import { listExpense, deleteExpense, updateExpense } from "../../api/expenseAPI";
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { FaTrash, FaEdit } from "react-icons/fa"; 
+import {
+  selectExpenses,
+  deleteExpenseThunk,
+  updateExpenseThunk,
+} from "../../redux/expenseSlice";
 
 const ExpenseList = () => {
-  const [expenses, setExpenses] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const expenses = useSelector(selectExpenses);
+  const dispatch = useDispatch();
+
   const [editingExpense, setEditingExpense] = useState(null);
 
-  // Fetch expenses
-  const fetchExpenses = async () => {
-    try {
-      const data = await listExpense();
-      setExpenses(data);
-    } catch (error) {
-      console.error("❌ Failed to fetch expenses", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchExpenses();
-  }, []);
-
   // Delete handler
-  const handleDelete = async id => {
+  const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this expense?"))
       return;
 
     try {
-      await deleteExpense(id);
-      setExpenses(expenses.filter(exp => exp.id !== id)); // remove from UI
+      await dispatch(deleteExpenseThunk(id)).unwrap();
     } catch (error) {
       console.error("❌ Failed to delete expense", error);
       alert("Failed to delete expense. Try again.");
@@ -38,32 +27,19 @@ const ExpenseList = () => {
   };
 
   const handleEdit = (expense) => {
-    setEditingExpense(expense); // open the edit form
+    setEditingExpense(expense);
   };
 
   const handleUpdate = async (id, updatedData) => {
     try {
-      const res = await updateExpense(id, updatedData);
-  
-      // Update the state (replace the updated expense in the list)
-      setExpenses(expenses.map(exp => (exp.id === id ? res : exp)));
-  
-      // Reset editing state
+      await dispatch(updateExpenseThunk({ id, payload: updatedData })).unwrap();
       setEditingExpense(null);
     } catch (err) {
       console.error("❌ Failed to update expense:", err);
     }
   };
 
-  if (loading) {
-    return (
-      <div className="w-full bg-white shadow-lg rounded-xl p-6">
-        <p className="text-center text-gray-600">Loading expenses...</p>
-      </div>
-    );
-  }
-
-return (
+  return (
     <div className="w-full bg-white shadow-lg rounded-xl p-6">
       <h2 className="text-2xl font-bold mb-4 text-gray-800">📋 Expense List</h2>
       <div className="overflow-x-auto">
@@ -81,17 +57,13 @@ return (
           <tbody>
             {expenses.length === 0 ? (
               <tr>
-                <td
-                  colSpan="6"
-                  className="text-center py-4 text-gray-500 italic"
-                >
+                <td colSpan="6" className="text-center py-4 text-gray-500 italic">
                   No expenses found
                 </td>
               </tr>
             ) : (
-              expenses.map(exp => (
+              expenses.map((exp) => (
                 <React.Fragment key={exp.id}>
-                  {/* Normal Row */}
                   <tr className="border-b hover:bg-gray-50 transition">
                     <td className="py-2 px-4">{exp.id}</td>
                     <td className="py-2 px-4">{exp.description}</td>
@@ -115,8 +87,8 @@ return (
                       </button>
                     </td>
                   </tr>
-  
-                  {/* Edit Form Row (only visible if editing this expense) */}
+
+                  {/* Edit Form Row */}
                   {editingExpense?.id === exp.id && (
                     <tr>
                       <td colSpan="6" className="bg-gray-100 p-4">
@@ -137,7 +109,6 @@ return (
                               })
                             }
                             className="border p-2 rounded w-1/3"
-                            placeholder="Description"
                           />
                           <input
                             type="number"
@@ -149,7 +120,6 @@ return (
                               })
                             }
                             className="border p-2 rounded w-1/4"
-                            placeholder="Amount"
                           />
                           <input
                             type="text"
@@ -161,7 +131,6 @@ return (
                               })
                             }
                             className="border p-2 rounded w-1/4"
-                            placeholder="Category"
                           />
                           <button
                             type="submit"
@@ -188,7 +157,6 @@ return (
       </div>
     </div>
   );
-  
 };
 
 export default ExpenseList;
