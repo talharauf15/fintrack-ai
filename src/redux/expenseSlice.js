@@ -1,4 +1,3 @@
-// src/redux/expenseSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { listExpense, createExpense, updateExpense, deleteExpense } from "../api/expenseAPI";
 

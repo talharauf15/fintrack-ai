@@ -1,76 +1,8 @@
-// import React, { useEffect, useState } from "react";
-// import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts";
-// import { listExpense } from "../../api/expenseAPI";
-// import { listIncome } from "../../api/incomeAPI";
-
-// const COLORS = ["#4CAF50", "#2196F3", "#F44336"]; // Balance, Income, Expense
-
-// export default function DashboardPieChart() {
-//   const [chartData, setChartData] = useState([]);
-
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       try {
-//         const expenses = await listExpense();
-//         const incomes = await listIncome();
-
-//         const totalExpense = expenses.reduce(
-//           (acc, item) => acc + parseFloat(item.amount),
-//           0
-//         );
-//         const totalIncome = incomes.reduce(
-//           (acc, item) => acc + parseFloat(item.amount),
-//           0
-//         );
-//         const totalBalance = totalIncome - totalExpense;
-
-//         setChartData([
-//           { name: "Balance", value: totalBalance },
-//           { name: "Income", value: totalIncome },
-//           { name: "Expense", value: totalExpense },
-//         ]);
-//       } catch (err) {
-//         console.error("❌ Failed to load balance data:", err);
-//       }
-//     };
-
-//     fetchData();
-//   }, []);
-
-//   return (
-//     <div className="w-full bg-white shadow-lg rounded-xl p-6">
-//       <h2 className="text-2xl font-bold mb-4 text-gray-800">
-//         💰 Balance vs Income vs Expense
-//       </h2>
-//       <div style={{ width: "100%", height: 400 }}>
-//         <ResponsiveContainer>
-//           <PieChart>
-//             <Pie
-//               data={chartData}
-//               cx="50%"
-//               cy="50%"
-//               outerRadius={120}
-//               fill="#8884d8"
-//               dataKey="value"
-//               label={({ name, value }) => `${name}: $${value.toFixed(2)}`}
-//             >
-//               {chartData.map((entry, index) => (
-//                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-//               ))}
-//             </Pie>
-//             <Tooltip formatter={(value) => `$${value.toFixed(2)}`} />
-//             <Legend />
-//           </PieChart>
-//         </ResponsiveContainer>
-//       </div>
-//     </div>
-//   );
-// }
-
-import React, { useEffect, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { PieChart, Pie, ResponsiveContainer, Sector } from "recharts";
-import { listExpense } from "../../api/expenseAPI";
-import { listIncome } from "../../api/incomeAPI";
+import { useSelector } from "react-redux";
+import { selectExpenses } from "../../redux/expenseSlice";
+import { selectIncomes } from "../../redux/incomeSlice";
 
 const COLORS = {
   Balance: "#4CAF50",
@@ -144,32 +76,31 @@ const renderActiveShape = ({
   );
 };
 
-export default function BalanceDistributionChart() {
-  const [chartData, setChartData] = useState([]);
+export default function DashboardPieChart() {
+  const expenses = useSelector(selectExpenses);
+  const incomes = useSelector(selectIncomes);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const expenses = await listExpense();
-        const incomes = await listIncome();
+  // 🔹 Compute chart data once based on redux data
+  const chartData = useMemo(() => {
+    if (!expenses.length && !incomes.length) return [];
 
-        const totalExpense = expenses.reduce((acc, item) => acc + parseFloat(item.amount), 0);
-        const totalIncome = incomes.reduce((acc, item) => acc + parseFloat(item.amount), 0);
-        const totalBalance = totalIncome - totalExpense;
+    const totalExpense = expenses.reduce(
+      (acc, item) => acc + parseFloat(item.amount),
+      0
+    );
+    const totalIncome = incomes.reduce(
+      (acc, item) => acc + parseFloat(item.amount),
+      0
+    );
+    const totalBalance = totalIncome - totalExpense;
 
-        setChartData([
-          { name: "Balance", value: totalBalance, fill: COLORS.Balance },
-          { name: "Income", value: totalIncome, fill: COLORS.Income },
-          { name: "Expense", value: totalExpense, fill: COLORS.Expense },
-        ]);
-      } catch (err) {
-        console.error("❌ Failed to load balance data:", err);
-      }
-    };
-
-    fetchData();
-  }, []);
+    return [
+      { name: "Balance", value: totalBalance, fill: COLORS.Balance },
+      { name: "Income", value: totalIncome, fill: COLORS.Income },
+      { name: "Expense", value: totalExpense, fill: COLORS.Expense },
+    ];
+  }, [expenses, incomes]);
 
   return (
     <div className="w-full bg-white shadow-lg rounded-xl p-6">
