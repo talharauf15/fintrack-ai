@@ -1,8 +1,11 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { createExpense } from "../../api/expenseAPI";
+import React, { useState, useCallback } from "react";
+import { useDispatch } from "react-redux";
+import { createExpenseThunk } from "../../redux/expenseSlice";
 import { askChatbot } from "../../api/chatbotAPI";
 
 const ExpenseForm = () => {
+  const dispatch = useDispatch();
+
   const [formData, setFormData] = useState({
     description: "",
     amount: "",
@@ -14,7 +17,7 @@ const ExpenseForm = () => {
   const [message, setMessage] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
 
-  // Debouncing function for AI category suggestion
+  // --- AI Suggestion (unchanged except centralization part) ---
   const debounce = (func, delay) => {
     let timeoutId;
     return (...args) => {
@@ -23,24 +26,19 @@ const ExpenseForm = () => {
     };
   };
 
-  // AI category suggestion function
   const getSuggestedCategory = async description => {
     if (!description.trim() || description.length < 3) return;
-
     setAiLoading(true);
     try {
       const prompt = `Based on this expense description: "${description}", suggest the most appropriate category from these options: Food,Transportation,Bills,Shopping,Health,Entertainment,Education,Rent,Utilities,Transportation,Taxes,Insurance,Debt Repayment,Childcare,Maintenance,Legal,Gifts & Donations,Pets,Miscellaneous. Reply with only the category name.`;
       const response = await askChatbot(prompt);
-      console.log(response);
+      const suggestedCategory = response.advice;
 
-      // Extract category from response
-      const suggestedCategory = response.advice ;
-      
-      // Ensure suggestedCategory is a string
-      const categoryString = typeof suggestedCategory === 'string' 
-        ? suggestedCategory 
-        : JSON.stringify(suggestedCategory);
-        
+      const categoryString =
+        typeof suggestedCategory === "string"
+          ? suggestedCategory
+          : JSON.stringify(suggestedCategory);
+
       const validCategories = [
         "Food",
         "Transportation",
@@ -61,6 +59,7 @@ const ExpenseForm = () => {
         "Pets",
         "Miscellaneous",
       ];
+
       const matchedCategory = validCategories.find(cat =>
         categoryString.toLowerCase().includes(cat.toLowerCase())
       );
@@ -78,9 +77,8 @@ const ExpenseForm = () => {
     }
   };
 
-  // Debounced version of getSuggestedCategory
   const debouncedGetCategory = useCallback(
-    debounce(description => getSuggestedCategory(description), 2000), 
+    debounce(description => getSuggestedCategory(description), 2000),
     []
   );
 
@@ -88,7 +86,6 @@ const ExpenseForm = () => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
 
-    // Trigger AI suggestion when description changes
     if (name === "description") {
       debouncedGetCategory(value);
     }
@@ -100,7 +97,7 @@ const ExpenseForm = () => {
     setMessage("");
 
     try {
-      await createExpense(formData);
+      await dispatch(createExpenseThunk(formData)).unwrap(); // ✅ central call
       setMessage("✅ Expense added successfully!");
       setFormData({
         description: "",
@@ -121,6 +118,7 @@ const ExpenseForm = () => {
       <h2 className="text-2xl font-bold mb-4 text-gray-800">➕ Add Expense</h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* --- rest of your form stays same (inputs, AI suggestion, etc.) --- */}
         {/* Description */}
         <div>
           <label className="block text-sm font-medium text-gray-700">
@@ -167,9 +165,8 @@ const ExpenseForm = () => {
             className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
-
-        {/* Category */}
         <div>
+          {/* Category */}
           <label className="block text-sm font-medium text-gray-700">
             Category
           </label>

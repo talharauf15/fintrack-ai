@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import {
   AreaChart,
   Area,
@@ -8,49 +8,39 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { listExpense } from "../../api/expenseAPI";
+import { useSelector } from "react-redux";
+import { selectExpenses } from "../../redux/expenseSlice";
 
 const ExpenseAreaChart = () => {
-  const [data, setData] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const expenses = useSelector(selectExpenses);
 
-  useEffect(() => {
-    const fetchExpenses = async () => {
-      try {
-        const expenses = await listExpense();
+  // ✅ Compute chart data from centralized store (no new API call)
+  const { data, categories } = useMemo(() => {
+    if (!expenses || expenses.length === 0) return { data: [], categories: [] };
 
-        // ✅ Unique categories
-        const uniqueCategories = [...new Set(expenses.map((e) => e.category))];
-        setCategories(uniqueCategories);
+    const uniqueCategories = [...new Set(expenses.map((e) => e.category))];
 
-        // ✅ Group by date + category sums
-        const grouped = {};
-        expenses.forEach((exp) => {
-          const date = exp.date;
-          if (!grouped[date]) {
-            grouped[date] = { name: date };
-            uniqueCategories.forEach((cat) => {
-              grouped[date][cat] = 0;
-            });
-          }
-          grouped[date][exp.category] += parseFloat(exp.amount);
+    const grouped = {};
+    expenses.forEach((exp) => {
+      const date = exp.date;
+      if (!grouped[date]) {
+        grouped[date] = { name: date };
+        uniqueCategories.forEach((cat) => {
+          grouped[date][cat] = 0;
         });
-
-        setData(Object.values(grouped));
-      } catch (error) {
-        console.error("❌ Failed to load chart data", error);
       }
-    };
+      grouped[date][exp.category] += parseFloat(exp.amount);
+    });
 
-    fetchExpenses();
-  }, []);
+    return { data: Object.values(grouped), categories: uniqueCategories };
+  }, [expenses]);
 
   return (
     <div className="w-full max-w-5xl mx-auto p-6 bg-white rounded-xl shadow-lg">
       <h2 className="text-2xl font-bold mb-4 text-gray-800 flex items-center gap-2">
         📊 Expense Trend by Category
       </h2>
-  
+
       <div className="w-full h-96">
         <ResponsiveContainer>
           <AreaChart
@@ -72,7 +62,7 @@ const ExpenseAreaChart = () => {
                 borderRadius: "8px",
               }}
             />
-  
+
             {/* ✅ Dynamic Areas by Category */}
             {categories.map((cat, i) => (
               <Area
@@ -89,7 +79,6 @@ const ExpenseAreaChart = () => {
       </div>
     </div>
   );
-  
 };
 
 export default ExpenseAreaChart;
