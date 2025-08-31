@@ -11,15 +11,45 @@ function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [popup, setPopup] = useState("");
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!/^[a-zA-Z0-9-]+$/.test(name)) {
+      newErrors.name = "Username can only contain letters, numbers, and hyphens (-).";
+    } else if (name.length < 3) {
+      newErrors.name = "Username must be at least 3 characters long.";
+    }
+    if (!/^[a-zA-Z]+$/.test(firstName)) {
+      newErrors.firstName = "First name must only contain letters.";
+    }
+    if (!/^[a-zA-Z]+$/.test(lastName)) {
+      newErrors.lastName = "Last name must only contain letters.";
+    }
+    if (!/^\S+@\S+\.\S+$/.test(email)) {
+      newErrors.email = "Please enter a valid email address.";
+    }
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      newErrors.password =
+        "Password must contain at least 8 characters, including uppercase, lowercase, number, and special character.";
+    }
+    if (password !== confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match.";
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSignup = async (e) => {
     e.preventDefault();
 
-    if (password !== confirmPassword) {
-      setError("❌ Passwords do not match!");
-      return;
-    }
+    if (!validateForm()) return;
 
     const payload = {
       username: name,
@@ -30,87 +60,131 @@ function Signup() {
     };
 
     try {
-      const res = await registerUser(payload);
-      // console.log("✅ User registered:", res);
+      await registerUser(payload);
 
       setName("");
-      setEmail("");
       setFirstName("");
       setLastName("");
+      setEmail("");
       setPassword("");
       setConfirmPassword("");
-      setError("");
+      setErrors({});
 
       navigate("/login");
     } catch (err) {
       console.error("❌ Registration failed:", err);
-      setError("Registration failed. Try again.");
+      setErrors({ api: "Registration failed. Try again." });
+
+
+      if (err.response && err.response.data) {
+        const backendErrors = err.response.data;
+        const popupMsg = Object.values(backendErrors)
+          .flat()
+          .join("\n");
+
+        setPopup(popupMsg);
+      } else {
+        setPopup("Something went wrong. Please try again.");
+      }
     }
   };
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
+      {popup && (
+        <div className="fixed top-4 right-4 bg-red-500 text-white px-4 py-2 rounded shadow-lg">
+          {popup}
+        </div>
+      )}
       <form
         onSubmit={handleSignup}
         className="bg-white shadow-md rounded px-8 pt-6 pb-8 w-96"
       >
         <h2 className="text-2xl font-bold mb-4 text-center">Sign Up</h2>
 
-        {/* Error Message */}
-        {error && (
+        {/* API Error */}
+        {errors.api && (
           <div className="bg-red-100 text-red-600 p-2 rounded mb-4 text-center">
-            {error}
+            {errors.api}
           </div>
         )}
 
+        {/* Username */}
         <input
           type="text"
-          placeholder="Full Name"
+          placeholder="Username"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full p-2 mb-4 border rounded"
+          className="w-full p-2 mb-2 border rounded"
           required
         />
+        {errors.name && <p className="text-red-500 text-sm mb-2">{errors.name}</p>}
+
+        {/* First Name */}
         <input
           type="text"
           placeholder="First Name"
           value={firstName}
           onChange={(e) => setFirstName(e.target.value)}
-          className="w-full p-2 mb-4 border rounded"
+          className="w-full p-2 mb-2 border rounded"
           required
         />
+        {errors.firstName && <p className="text-red-500 text-sm mb-2">{errors.firstName}</p>}
+
+        {/* Last Name */}
         <input
           type="text"
           placeholder="Last Name"
           value={lastName}
           onChange={(e) => setLastName(e.target.value)}
-          className="w-full p-2 mb-4 border rounded"
+          className="w-full p-2 mb-2 border rounded"
           required
         />
+        {errors.lastName && <p className="text-red-500 text-sm mb-2">{errors.lastName}</p>}
+
+        {/* Email */}
         <input
           type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-2 mb-4 border rounded"
+          className="w-full p-2 mb-2 border rounded"
           required
         />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-2 mb-4 border rounded"
-          required
-        />
+        {errors.email && <p className="text-red-500 text-sm mb-2">{errors.email}</p>}
+
+        {/* Password */}
+        <div className="relative mb-2">
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full p-2 border rounded pr-10"
+            required
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sm text-gray-600"
+          >
+            {showPassword ? "Hide" : "Show"}
+          </button>
+        </div>
+        {errors.password && <p className="text-red-500 text-sm mb-2">{errors.password}</p>}
+
+        {/* Confirm Password */}
         <input
           type="password"
           placeholder="Confirm Password"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
-          className="w-full p-2 mb-4 border rounded"
+          className="w-full p-2 mb-2 border rounded"
           required
         />
+        {errors.confirmPassword && (
+          <p className="text-red-500 text-sm mb-2">{errors.confirmPassword}</p>
+        )}
 
         <button
           type="submit"
@@ -133,4 +207,4 @@ function Signup() {
   );
 }
 
-export default Signup
+export default Signup;

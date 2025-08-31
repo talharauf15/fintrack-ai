@@ -11,6 +11,7 @@ export default function Login() {
   // Local state for form
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -20,8 +21,8 @@ export default function Login() {
     setLoading(true);
 
     const credentials = {
-      username: email, 
-      email, 
+      username: email,
+      email,
       password,
     };
 
@@ -81,14 +82,25 @@ export default function Login() {
           autoComplete="username"
           required
         />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          className="w-full p-2 mb-4 border rounded"
-          required
-        />
+
+        <div className="relative mb-2">
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            className="w-full p-2 border rounded pr-10"
+            required
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sm text-gray-600"
+          >
+            {showPassword ? "Hide" : "Show"}
+          </button>
+        </div>
+
         <button
           type="submit"
           className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
