@@ -16,7 +16,6 @@ const Ai = () => {
     e.preventDefault();
     if (!input.trim()) return;
 
-    // Add user message
     const newMessage = { role: "user", content: input };
     setMessages(prev => [...prev, newMessage]);
     setInput("");

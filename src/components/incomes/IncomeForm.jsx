@@ -18,7 +18,7 @@ const IncomeForm = () => {
   const [message, setMessage] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
 
-  // Debouncing
+
   const debounce = (func, delay) => {
     let timeoutId;
     return (...args) => {
